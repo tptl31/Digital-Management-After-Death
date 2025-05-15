@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>대리인 초대</title>
+    <style>
+      body {
+        font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-weight: bold;
+        font-size: 20px;
+        color: #333;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+      .user-name {
+        margin-right: 15px;
+        font-weight: 500;
+      }
+      .logout-button {
+        background-color: #f1f3f5;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+      }
+      .logout-button:hover {
+        background-color: #e9ecef;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      .page-title {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 24px;
+      }
+      .card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+      }
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+        display: flex;
+        align-items: center;
+      }
+      .card-icon {
+        margin-right: 10px;
+        font-size: 20px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #ffeb00;
+        box-shadow: 0 0 0 2px rgba(255, 235, 0, 0.2);
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .button:hover {
+        background-color: #45a049;
+      }
+      .button-secondary {
+        background-color: #f1f3f5;
+        color: #333;
+      }
+      .button-secondary:hover {
+        background-color: #e9ecef;
+      }
+      .info-text {
+        color: #666;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+      .agent-list {
+        margin-top: 30px;
+      }
+      .agent-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+      }
+      .agent-info {
+        flex: 1;
+      }
+      .agent-name {
+        font-weight: 500;
+        margin-bottom: 5px;
+      }
+      .agent-email {
+        color: #666;
+        font-size: 14px;
+      }
+      .agent-relation {
+        color: #888;
+        font-size: 12px;
+        background-color: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-left: 10px;
+      }
+      .agent-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .status-pending {
+        background-color: #ffe066;
+        color: #f59f00;
+      }
+      .status-auth-required {
+        background-color: #ff8787;
+        color: #d63031;
+      }
+      .status-active {
+        background-color: #d3f9d8;
+        color: #2f9e44;
+      }
+      .agent-actions {
+        margin-left: 10px;
+        display: flex;
+        gap: 8px;
+      }
+      .agent-button {
+        background-color: #f1f3f5;
+        color: #333;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .agent-button:hover {
+        background-color: #e9ecef;
+      }
+      .agent-button-danger {
+        color: #e03131;
+      }
+      .agent-button-danger:hover {
+        background-color: #ffdeeb;
+      }
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .checkbox-container input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+      }
+      .permission-list {
+        border: 1px solid #eee;
+        border-radius: 6px;
+        margin-top: 15px;
+        padding: 15px;
+      }
+      .permission-label {
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 0;
+        color: #888;
+      }
+      .empty-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+      .modal-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">디지털 사후 관리 웹앱</div>
+      <div class="user-info">
+        <span class="user-name" id="username">사용자명</span>
+        <button class="logout-button" onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1 class="page-title">대리인 초대</h1>
+
+      <div class="card">
+        <h2 class="card-title">
+          <span class="card-icon">👤</span>
+          새 대리인 초대
+        </h2>
+
+        <p>
+          사망 후 귀하의 디지털 자산을 관리할 대리인을 초대하세요. 대리인은 본인
+          인증 및 2단계 인증을 완료해야 권한이 활성화됩니다.
+        </p>
+
+        <form id="invite-form">
+          <div class="form-group">
+            <label for="agent-name">대리인 이름</label>
+            <input
+              type="text"
+              id="agent-name"
+              placeholder="대리인의 이름을 입력하세요"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="agent-email">대리인 이메일</label>
+            <input
+              type="email"
+              id="agent-email"
+              placeholder="대리인의 이메일을 입력하세요"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="agent-phone">대리인 휴대폰 번호</label>
+            <input
+              type="tel"
+              id="agent-phone"
+              placeholder="'-' 없이 입력하세요"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="agent-relation">대리인과의 관계</label>
+            <select id="agent-relation" required>
+              <option value="">선택하세요</option>
+              <option value="가족">가족</option>
+              <option value="친구">친구</option>
+              <option value="변호사">변호사</option>
+              <option value="회계사">회계사</option>
+              <option value="기타">기타</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>대리인 권한 설정</label>
+            <div class="permission-list">
+              <div class="permission-label">SNS 데이터 권한</div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="perm-kakao-profile" />
+                <label for="perm-kakao-profile"
+                  >카카오 프로필 조회 및 관리</label
+                >
+              </div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="perm-kakao-messages" />
+                <label for="perm-kakao-messages"
+                  >카카오 메시지 조회 및 관리</label
+                >
+              </div>
+              <!-- 향후 추가: 페이스북, 인스타그램 등 -->
+              <div class="permission-label">이메일 데이터 권한</div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="perm-email" />
+                <label for="perm-email">이메일 데이터 조회 및 관리</label>
+              </div>
+              <div class="permission-label">클라우드 데이터 권한</div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="perm-cloud" />
+                <label for="perm-cloud">클라우드 데이터 조회 및 관리</label>
+              </div>
+              <div class="permission-label">사후 지침</div>
+              <div class="checkbox-container">
+                <input type="checkbox" id="perm-instructions" />
+                <label for="perm-instructions">사후 지침 실행</label>
+              </div>
+            </div>
+            <p class="info-text">
+              * 대리인은 사용자의 사망이 확인된 후에만 권한이 활성화됩니다.
+            </p>
+          </div>
+
+          <div class="actions">
+            <button
+              type="button"
+              class="button button-secondary"
+              onclick="goBack()"
+            >
+              취소
+            </button>
+            <button type="button" class="button" onclick="inviteAgent()">
+              대리인 초대하기
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">
+          <span class="card-icon">👥</span>
+          대리인 목록
+        </h2>
+
+        <div id="agent-list" class="agent-list">
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>
+              등록된 대리인이 없습니다. 대리인을 초대하여 디지털 사후 관리를
+              시작하세요.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast">대리인 초대 링크가 발송되었습니다.</div>
+
+    <!-- 삭제 확인 모달 -->
+    <div class="modal" id="delete-modal">
+      <div class="modal-content">
+        <h3 class="modal-title">대리인 삭제</h3>
+        <p>정말 이 대리인을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+        <div class="modal-actions">
+          <button class="button button-secondary" onclick="closeModal()">
+            취소
+          </button>
+          <button
+            class="button"
+            style="background-color: #e03131"
+            onclick="confirmDelete()"
+          >
+            삭제
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 사용자 정보 불러오기
+      fetch("/api/user-info")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("username").textContent = data.name;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
+      // 대리인 데이터 (로컬 스토리지에 저장)
+      let agents = JSON.parse(localStorage.getItem("digitalAgents")) || [];
+      let currentDeleteId = null;
+
+      // 페이지 로드시 대리인 목록 표시
+      document.addEventListener("DOMContentLoaded", function () {
+        displayAgents();
+      });
+
+      // 대리인 초대하기
+      async function inviteAgent() {
+        const name = document.getElementById("agent-name").value;
+        const email = document.getElementById("agent-email").value;
+        const phone = document.getElementById("agent-phone").value;
+        const relation = document.getElementById("agent-relation").value;
+
+        // 간단한 유효성 검사
+        if (!name || !email || !phone || !relation) {
+          showToast("모든 필수 필드를 입력해주세요.");
+          return;
+        }
+
+        // 권한 정보 수집
+        const permissions = {
+          kakaoProfile: document.getElementById("perm-kakao-profile").checked,
+          kakaoMessages: document.getElementById("perm-kakao-messages").checked,
+          email: document.getElementById("perm-email").checked,
+          cloud: document.getElementById("perm-cloud").checked,
+          instructions: document.getElementById("perm-instructions").checked,
+        };
+
+        // 새 대리인 객체 생성
+        const newAgent = {
+          id: Date.now(), // 간단한 고유 ID
+          name: name,
+          email: email,
+          phone: phone,
+          relation: relation,
+          permissions: permissions,
+          status: "pending", // 초대 후 인증 대기 상태
+          isAuthenticated: false, // 본인 인증 여부
+          invitedAt: new Date().toISOString(),
+          inviteLink: `/agent/accept-invite/${Date.now()}`, // 초대 링크 (실제로는 서버에서 생성해야 함)
+        };
+
+        // 서버로 초대 요청 보내기
+        try {
+          const response = await fetch("/api/invite-agent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newAgent),
+          });
+
+          if (response.ok) {
+            agents.push(newAgent);
+            saveAgents();
+            displayAgents();
+
+            // 폼 초기화
+            document.getElementById("invite-form").reset();
+
+            // 토스트 메시지 표시
+            showToast("대리인 초대 링크가 발송되었습니다.");
+          } else {
+            showToast("대리인 초대에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("대리인 초대 오류:", error);
+          showToast("대리인 초대 중 오류가 발생했습니다.");
+        }
+      }
+
+      // 대리인 목록 표시
+      function displayAgents() {
+        const listElement = document.getElementById("agent-list");
+        const emptyState = document.getElementById("empty-state");
+
+        // 모든 자식 요소 제거
+        while (listElement.firstChild) {
+          listElement.removeChild(listElement.firstChild);
+        }
+
+        // empty-state 다시 추가
+        listElement.appendChild(emptyState);
+
+        // 대리인이 없는 경우 empty-state 표시
+        if (agents.length === 0) {
+          emptyState.style.display = "block";
+          return;
+        }
+
+        // empty-state 숨기기
+        emptyState.style.display = "none";
+
+        // 대리인 목록 생성
+        agents.forEach((agent) => {
+          let statusClass, statusText;
+          if (agent.status === "pending" && !agent.isAuthenticated) {
+            statusClass = "status-auth-required";
+            statusText = "본인 인증 필요";
+          } else if (agent.status === "pending") {
+            statusClass = "status-pending";
+            statusText = "사망 확인 대기중";
+          } else {
+            statusClass = "status-active";
+            statusText = "활성화됨";
+          }
+
+          const agentItem = document.createElement("div");
+          agentItem.className = "agent-item";
+
+          agentItem.innerHTML = `
+          <div class="agent-info">
+            <div class="agent-name">${agent.name}
+              <span class="agent-relation">${agent.relation}</span>
+            </div>
+            <div class="agent-email">${agent.email} | ${agent.phone}</div>
+          </div>
+          <span class="agent-status ${statusClass}">${statusText}</span>
+          <div class="agent-actions">
+            <button class="agent-button" onclick="resendInvite(${agent.id})">
+              <span>재초대</span>
+            </button>
+            <button class="agent-button agent-button-danger" onclick="deleteAgent(${agent.id})">
+              <span>삭제</span>
+            </button>
+          </div>
+        `;
+
+          listElement.appendChild(agentItem);
+        });
+
+        // 마지막 항목의 border-bottom 제거
+        if (
+          listElement.lastChild &&
+          listElement.lastChild.classList.contains("agent-item")
+        ) {
+          listElement.lastChild.style.borderBottom = "none";
+        }
+      }
+
+      // 대리인 재초대
+      async function resendInvite(id) {
+        const agent = agents.find((a) => a.id === id);
+        if (agent) {
+          try {
+            const response = await fetch("/api/resend-invite", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ agentId: id, email: agent.email }),
+            });
+
+            if (response.ok) {
+              showToast(`${agent.name}님에게 초대 링크가 재전송되었습니다.`);
+            } else {
+              showToast("초대 링크 재전송에 실패했습니다.");
+            }
+          } catch (error) {
+            console.error("초대 링크 재전송 오류:", error);
+            showToast("초대 링크 재전송 중 오류가 발생했습니다.");
+          }
+        }
+      }
+
+      // 대리인 삭제 모달 열기
+      function deleteAgent(id) {
+        currentDeleteId = id;
+        document.getElementById("delete-modal").style.display = "flex";
+      }
+
+      // 대리인 삭제 확인
+      function confirmDelete() {
+        if (currentDeleteId) {
+          agents = agents.filter((agent) => agent.id !== currentDeleteId);
+          saveAgents();
+          displayAgents();
+          closeModal();
+          showToast("대리인이 삭제되었습니다.");
+        }
+      }
+
+      // 모달 닫기
+      function closeModal() {
+        document.getElementById("delete-modal").style.display = "none";
+        currentDeleteId = null;
+      }
+
+      // 이전 페이지로 돌아가기
+      function goBack() {
+        window.location.href = "/home.html";
+      }
+
+      // 로그아웃
+      function logout() {
+        fetch("/auth/logout", { method: "POST" }).then(() => {
+          window.location.href = "/";
+        });
+      }
+
+      // 에이전트 저장 (로컬 스토리지)
+      function saveAgents() {
+        localStorage.setItem("digitalAgents", JSON.stringify(agents));
+      }
+
+      // 토스트 메시지 표시
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3000);
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'930c55f9cbbb53c1',t:'MTc0NDcyOTQ3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

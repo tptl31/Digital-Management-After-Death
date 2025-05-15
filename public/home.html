@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>디지털 사후 관리 웹앱</title>
+    <style>
+      body {
+        font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-weight: bold;
+        font-size: 20px;
+        color: #333;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+      .user-name {
+        margin-right: 15px;
+        font-weight: 500;
+      }
+      .logout-button {
+        background-color: #f1f3f5;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+      }
+      .logout-button:hover {
+        background-color: #e9ecef;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      .welcome-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+      }
+      h1 {
+        color: #333;
+        margin-top: 0;
+        font-size: 24px;
+      }
+      .welcome-text {
+        color: #666;
+        line-height: 1.6;
+      }
+      .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+      .service-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+      }
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+      .service-icon {
+        width: 48px;
+        height: 48px;
+        background-color: #ffeb00;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+      }
+      .service-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .service-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .back-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        padding: 0;
+      }
+      .back-button:hover {
+        color: #333;
+      }
+      .back-icon {
+        margin-right: 5px;
+      }
+      .title-section {
+        margin-bottom: 30px;
+      }
+      .subtitle {
+        color: #666;
+        line-height: 1.6;
+        margin-top: 0;
+      }
+      .sns-platforms {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+      .platform-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .platform-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+      .platform-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        object-fit: contain;
+      }
+      .platform-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      .platform-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+      .connect-button {
+        background-color: #4dadf7;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        width: 100%;
+        max-width: 200px;
+      }
+      .connect-button.facebook {
+        background-color: #3b5998;
+      }
+      .connect-button.instagram {
+        background-color: #c13584;
+      }
+      .connect-button.kakao {
+        background-color: #fee500;
+        color: #3c1e1e;
+      }
+      .connect-button.kakao.disconnect {
+        background-color: #e74c3c;
+        color: white;
+      }
+      .connect-button:hover {
+        opacity: 0.9;
+      }
+      .connection-status {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #888;
+      }
+      .connected {
+        color: #2ecc71;
+        font-weight: 500;
+      }
+      .data-section {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-top: 40px;
+        display: none;
+      }
+      .data-section h2 {
+        margin-top: 0;
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      .data-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+      }
+      .data-card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+      }
+      .data-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+      }
+      .data-meta {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 10px;
+      }
+      .data-content {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+      }
+      .data-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+      }
+      .tab-container {
+        margin-top: 20px;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .tab-button {
+        background: none;
+        border: none;
+        padding: 10px 15px;
+        margin-right: 10px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        font-size: 14px;
+        color: #666;
+      }
+      .tab-button.active {
+        border-bottom: 2px solid #4dadf7;
+        color: #4dadf7;
+        font-weight: 500;
+      }
+      .tab-content {
+        display: none;
+        padding: 20px 0;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .data-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      .data-select-all {
+        background: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .data-upload-selected {
+        background-color: #4dadf7;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .loading-overlay {
+        display: none;
+        position: fixed;
+        z-index: 200;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #4dadf7;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      .loading-text {
+        font-size: 18px;
+        color: #333;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .data-checkbox {
+        margin-right: 8px;
+      }
+      .upload-success {
+        background-color: #e6f7e9;
+        border-left: 4px solid #2ecc71;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 4px;
+        display: none;
+      }
+      .upload-success-text {
+        color: #27ae60;
+        margin: 0;
+        font-weight: 500;
+      }
+      #page-home,
+      #page-sns-upload {
+        display: none;
+      }
+      .active-page {
+        display: block !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">디지털 사후 관리 웹앱</div>
+      <div class="user-info">
+        <span class="user-name" id="username">사용자명</span>
+        <button class="logout-button" onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+
+    <div id="page-home" class="active-page">
+      <div class="container">
+        <div class="welcome-card">
+          <h1>안녕하세요, <span id="welcome-name">사용자</span>님!</h1>
+          <p class="welcome-text">
+            카카오톡 인증서를 통해 안전하게 로그인되었습니다. 이제 다양한
+            서비스를 이용하실 수 있습니다.
+          </p>
+        </div>
+        <div class="service-grid">
+          <div class="service-card" onclick="navigateToSnsUpload()">
+            <div class="service-icon">📝</div>
+            <div class="service-title">SNS 데이터 업로드</div>
+            <div class="service-description">
+              프로필 정보와 메시지 데이터를 업로드하고 관리하세요.
+            </div>
+          </div>
+          <div class="service-card" onclick="goToService(1)">
+            <div class="service-icon">⚙️</div>
+            <div class="service-title">데이터 설정</div>
+            <div class="service-description">
+              디지털 유산 데이터를 전달하거나 삭제하도록 설정할 수 있습니다.
+            </div>
+          </div>
+          <div class="service-card" onclick="goToService(2)">
+            <div class="service-icon">👤</div>
+            <div class="service-title">대리인 초대</div>
+            <div class="service-description">
+              당신이 떠난 후, 지정된 사람이 정보에 접근할 수 있도록 미리 권한을
+              설정하세요
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-sns-upload">
+      <div class="container">
+        <button class="back-button" onclick="navigateToHome()">
+          <span class="back-icon">←</span> 돌아가기
+        </button>
+        <div class="title-section">
+          <h1>SNS 데이터 업로드</h1>
+          <p class="subtitle">
+            소셜 미디어 계정을 연결하여 프로필 정보와 메시지 데이터를 안전하게
+            업로드하고 관리하세요.
+          </p>
+        </div>
+        <div class="sns-platforms">
+          <div class="platform-card" id="facebook-card">
+            <img
+              src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/6.15.0/facebook.svg"
+              class="platform-icon"
+              style="background-color: #f0f2f5"
+            />
+            <div class="platform-title">페이스북</div>
+            <div class="platform-description">
+              게시글, 사진, 프로필 정보 등의 데이터를 연결하여 관리하세요.
+            </div>
+            <button class="connect-button facebook" onclick="connectFacebook()">
+              연결하기
+            </button>
+            <div class="connection-status" id="facebook-status">
+              연결되지 않음
+            </div>
+          </div>
+          <div class="platform-card" id="instagram-card">
+            <img
+              src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/6.15.0/instagram.svg"
+              class="platform-icon"
+              style="background-color: #f0f2f5"
+            />
+            <div class="platform-title">인스타그램</div>
+            <div class="platform-description">
+              게시물, 스토리, 프로필 데이터를 안전하게 관리하세요.
+            </div>
+            <button
+              class="connect-button instagram"
+              onclick="connectInstagram()"
+            >
+              연결하기
+            </button>
+            <div class="connection-status" id="instagram-status">
+              연결되지 않음
+            </div>
+          </div>
+          <div class="platform-card" id="kakao-card">
+            <img
+              src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/6.15.0/kakaotalk.svg"
+              class="platform-icon"
+              style="background-color: #f0f2f5"
+            />
+            <div class="platform-title">카카오</div>
+            <div class="platform-description">
+              카카오 계정의 프로필 정보와 메시지를 관리하세요.
+            </div>
+            <button
+              class="connect-button kakao"
+              id="kakao-connect-button"
+              onclick="connectKakao()"
+            >
+              연결하기
+            </button>
+            <div class="connection-status" id="kakao-status">연결되지 않음</div>
+          </div>
+        </div>
+        <div class="data-section" id="facebook-data">
+          <h2>페이스북 데이터</h2>
+          <div class="tab-container">
+            <button
+              class="tab-button active"
+              onclick="openTab('facebook-posts')"
+            >
+              게시글
+            </button>
+            <button class="tab-button" onclick="openTab('facebook-photos')">
+              사진
+            </button>
+          </div>
+          <div id="facebook-posts" class="tab-content active">
+            <div class="data-grid" id="facebook-posts-grid"></div>
+          </div>
+          <div id="facebook-photos" class="tab-content">
+            <div class="data-grid" id="facebook-photos-grid"></div>
+          </div>
+          <div class="data-actions">
+            <button class="data-select-all" onclick="selectAllData('facebook')">
+              전체 선택
+            </button>
+            <button
+              class="data-upload-selected"
+              onclick="uploadSelectedData('facebook')"
+            >
+              선택한 데이터 업로드
+            </button>
+          </div>
+          <div class="upload-success" id="facebook-upload-success">
+            <p class="upload-success-text">
+              데이터가 성공적으로 업로드되었습니다. 이제 이 데이터는 안전하게
+              보관되며, 지정된 대리인에게 공유될 수 있습니다.
+            </p>
+          </div>
+        </div>
+        <div class="data-section" id="instagram-data">
+          <h2>인스타그램 데이터</h2>
+          <div class="tab-container">
+            <button
+              class="tab-button active"
+              onclick="openTab('instagram-posts')"
+            >
+              게시물
+            </button>
+            <button class="tab-button" onclick="openTab('instagram-stories')">
+              스토리
+            </button>
+          </div>
+          <div id="instagram-posts" class="tab-content active">
+            <div class="data-grid" id="instagram-posts-grid"></div>
+          </div>
+          <div id="instagram-stories" class="tab-content">
+            <div class="data-grid" id="instagram-stories-grid"></div>
+          </div>
+          <div class="data-actions">
+            <button
+              class="data-select-all"
+              onclick="selectAllData('instagram')"
+            >
+              전체 선택
+            </button>
+            <button
+              class="data-upload-selected"
+              onclick="uploadSelectedData('instagram')"
+            >
+              선택한 데이터 업로드
+            </button>
+          </div>
+          <div class="upload-success" id="instagram-upload-success">
+            <p class="upload-success-text">
+              데이터가 성공적으로 업로드되었습니다. 이제 이 데이터는 안전하게
+              보관되며, 지정된 대리인에게 공유될 수 있습니다.
+            </p>
+          </div>
+        </div>
+        <div class="data-section" id="kakao-data">
+          <h2>카카오 데이터</h2>
+          <div class="tab-container">
+            <button
+              class="tab-button active"
+              onclick="openTab('kakao-profile')"
+            >
+              프로필
+            </button>
+            <button class="tab-button" onclick="openTab('kakao-messages')">
+              메시지
+            </button>
+          </div>
+          <div id="kakao-profile" class="tab-content active">
+            <div class="data-grid" id="kakao-profile-grid"></div>
+          </div>
+          <div id="kakao-messages" class="tab-content">
+            <div class="data-grid" id="kakao-messages-grid"></div>
+          </div>
+          <div class="data-actions">
+            <button class="data-select-all" onclick="selectAllData('kakao')">
+              전체 선택
+            </button>
+            <button
+              class="data-upload-selected"
+              onclick="uploadSelectedData('kakao')"
+            >
+              선택한 데이터 업로드
+            </button>
+          </div>
+          <div class="upload-success" id="kakao-upload-success">
+            <p class="upload-success-text">
+              데이터가 성공적으로 업로드되었습니다. 이제 이 데이터는 안전하게
+              보관되며, 지정된 대리인에게 공유될 수 있습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loader"></div>
+      <div class="loading-text" id="loading-text">데이터를 가져오는 중...</div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const response = await fetch("/api/user-info");
+          if (response.ok) {
+            const user = await response.json();
+            document.getElementById("username").textContent = user.name;
+            document.getElementById("welcome-name").textContent = user.name;
+          } else {
+            window.location.href = "/auth/login";
+          }
+        } catch (error) {
+          console.error("사용자 정보 요청 오류:", error);
+          window.location.href = "/auth/login";
+        }
+      });
+
+      function navigateToSnsUpload() {
+        document.getElementById("page-home").classList.remove("active-page");
+        document.getElementById("page-sns-upload").classList.add("active-page");
+        checkKakaoConnection();
+      }
+
+      function navigateToHome() {
+        document
+          .getElementById("page-sns-upload")
+          .classList.remove("active-page");
+        document.getElementById("page-home").classList.add("active-page");
+      }
+
+      function goToService(index) {
+        switch (index) {
+          case 1:
+            window.location.href = "/data-management";
+            break;
+          case 2:
+            window.location.href = "/invite-agent.html";
+            break;
+        }
+      }
+
+      async function logout() {
+        try {
+          const response = await fetch("/auth/logout", { method: "POST" });
+          if (response.ok) {
+            alert("로그아웃 되었습니다.");
+            window.location.href = "/";
+          } else {
+            alert("로그아웃에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("로그아웃 오류:", error);
+          alert("로그아웃 중 오류가 발생했습니다.");
+        }
+      }
+
+      function connectFacebook() {
+        alert("페이스북 연결은 준비 중입니다.");
+      }
+
+      function connectInstagram() {
+        alert("인스타그램 연결은 준비 중입니다.");
+      }
+
+      function connectKakao() {
+        showLoading("카카오 로그인으로 이동 중...");
+        window.location.href = "/auth/kakao";
+      }
+
+      async function disconnectKakao() {
+        showLoading("카카오 연결 해제 중...");
+        try {
+          const response = await fetch("/auth/kakao/unlink", {
+            method: "POST",
+          });
+          if (response.ok) {
+            const kakaoButton = document.getElementById("kakao-connect-button");
+            kakaoButton.textContent = "연결하기";
+            kakaoButton.classList.remove("disconnect");
+            kakaoButton.onclick = connectKakao;
+            document.getElementById("kakao-status").textContent =
+              "연결되지 않음";
+            document
+              .getElementById("kakao-status")
+              .classList.remove("connected");
+            document.getElementById("kakao-data").style.display = "none";
+            alert("카카오 연결이 해제되었습니다.");
+          } else {
+            alert("연결 해제에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("연결 해제 오류:", error);
+          alert("연결 해제 중 오류가 발생했습니다.");
+        } finally {
+          hideLoading();
+        }
+      }
+
+      async function checkKakaoConnection() {
+        try {
+          const response = await fetch("/api/user-info");
+          if (response.ok) {
+            const user = await response.json();
+            const kakaoButton = document.getElementById("kakao-connect-button");
+            if (user.kakaoId) {
+              kakaoButton.textContent = "연결 해제";
+              kakaoButton.classList.add("disconnect");
+              kakaoButton.onclick = disconnectKakao;
+              document.getElementById("kakao-status").textContent = "연결됨";
+              document
+                .getElementById("kakao-status")
+                .classList.add("connected");
+              fetchKakaoData();
+            } else {
+              kakaoButton.textContent = "연결하기";
+              kakaoButton.classList.remove("disconnect");
+              kakaoButton.onclick = connectKakao;
+              document.getElementById("kakao-status").textContent =
+                "연결되지 않음";
+              document
+                .getElementById("kakao-status")
+                .classList.remove("connected");
+            }
+          }
+        } catch (error) {
+          console.error("카카오 연결 상태 확인 오류:", error);
+        }
+      }
+
+      async function fetchKakaoData() {
+        showLoading("카카오 데이터를 가져오는 중...");
+        try {
+          const userResponse = await fetch("/api/user-info");
+          const user = await userResponse.json();
+          const profile = {
+            id: "kakao_profile",
+            nickname: user.nickname,
+            profile_image:
+              user.profileImage || "https://via.placeholder.com/150",
+          };
+          let messages = [];
+          if (user.hasTalkMessage) {
+            const messageResponse = await fetch("/api/kakao/messages");
+            const messageData = await messageResponse.json();
+            messages = messageData.messages;
+          }
+          loadKakaoData(profile, messages);
+          document.getElementById("kakao-data").style.display = "block";
+        } catch (error) {
+          console.error("카카오 데이터 로드 오류:", error);
+        } finally {
+          hideLoading();
+        }
+      }
+
+      function loadKakaoData(profile, messages) {
+        const profileGrid = document.getElementById("kakao-profile-grid");
+        profileGrid.innerHTML = "";
+        profileGrid.innerHTML += `
+        <div class="data-card">
+          <div class="checkbox-container">
+            <input type="checkbox" class="data-checkbox" id="${profile.id}">
+            <label for="${profile.id}"></label>
+          </div>
+          <img src="${profile.profile_image}" alt="${profile.nickname}" class="data-image">
+          <div class="data-title">${profile.nickname}</div>
+        </div>
+      `;
+        const messagesGrid = document.getElementById("kakao-messages-grid");
+        messagesGrid.innerHTML = "";
+        if (messages.length === 0) {
+          messagesGrid.innerHTML =
+            '<p class="data-content">메시지 데이터가 없습니다.</p>';
+        } else {
+          messages.forEach((msg) => {
+            messagesGrid.innerHTML += `
+            <div class="data-card">
+              <div class="checkbox-container">
+                <input type="checkbox" class="data-checkbox" id="${msg.id}">
+                <label for="${msg.id}"></label>
+              </div>
+              <div class="data-content">${msg.content}</div>
+              <div class="data-meta">${new Date(
+                msg.timestamp
+              ).toLocaleString()}</div>
+            </div>
+          `;
+          });
+        }
+      }
+
+      function loadFacebookData(posts, photos) {
+        const postsGrid = document.getElementById("facebook-posts-grid");
+        postsGrid.innerHTML = "";
+        posts.forEach((post) => {
+          postsGrid.innerHTML += `
+          <div class="data-card">
+            <div class="checkbox-container">
+              <input type="checkbox" class="data-checkbox" id="${post.id}">
+              <label for="${post.id}" class="data-title">${post.title}</label>
+            </div>
+            <div class="data-content">${post.message}</div>
+          </div>
+        `;
+        });
+        const photosGrid = document.getElementById("facebook-photos-grid");
+        photosGrid.innerHTML = "";
+        photos.forEach((photo) => {
+          photosGrid.innerHTML += `
+          <div class="data-card">
+            <div class="checkbox-container">
+              <input type="checkbox" class="data-checkbox" id="${photo.id}">
+              <label for="${photo.id}"></label>
+            </div>
+            <img src="${photo.source}" alt="${photo.name}" class="data-image">
+            <div class="data-title">${photo.name}</div>
+          </div>
+        `;
+        });
+      }
+
+      function loadInstagramData(posts, stories) {
+        const postsGrid = document.getElementById("instagram-posts-grid");
+        postsGrid.innerHTML = "";
+        posts.forEach((post) => {
+          postsGrid.innerHTML += `
+          <div class="data-card">
+            <div class="checkbox-container">
+              <input type="checkbox" class="data-checkbox" id="${post.id}">
+              <label for="${post.id}"></label>
+            </div>
+            <img src="${post.image}" alt="Instagram post" class="data-image">
+            <div class="data-content">${post.caption}</div>
+          </div>
+        `;
+        });
+        const storiesGrid = document.getElementById("instagram-stories-grid");
+        storiesGrid.innerHTML = "";
+        stories.forEach((story) => {
+          storiesGrid.innerHTML += `
+          <div class="data-card">
+            <div class="checkbox-container">
+              <input type="checkbox" class="data-checkbox" id="${story.id}">
+              <label for="${story.id}"></label>
+            </div>
+            <img src="${story.image}" alt="Instagram story" class="data-image">
+          </div>
+        `;
+        });
+      }
+
+      function openTab(tabId) {
+        const platform = tabId.split("-")[0];
+        const tabContent = document.querySelectorAll(
+          `#${platform}-data .tab-content`
+        );
+        const tabButtons = document.querySelectorAll(
+          `#${platform}-data .tab-button`
+        );
+        tabContent.forEach((tab) => tab.classList.remove("active"));
+        tabButtons.forEach((button) => button.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      function selectAllData(platform) {
+        const checkboxes = document.querySelectorAll(
+          `#${platform}-data .data-checkbox`
+        );
+        checkboxes.forEach((checkbox) => (checkbox.checked = true));
+      }
+
+      function uploadSelectedData(platform) {
+        showLoading("데이터를 업로드하는 중...");
+        setTimeout(() => {
+          hideLoading();
+          document.getElementById(`${platform}-upload-success`).style.display =
+            "block";
+          setTimeout(() => {
+            document.getElementById(
+              `${platform}-upload-success`
+            ).style.display = "none";
+          }, 3000);
+        }, 1500);
+      }
+
+      function showLoading(message) {
+        document.getElementById("loading-text").textContent = message;
+        document.getElementById("loading-overlay").style.display = "flex";
+      }
+
+      function hideLoading() {
+        document.getElementById("loading-overlay").style.display = "none";
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'930c2026bd5f8832',t:'MTc0NDcyNzI2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

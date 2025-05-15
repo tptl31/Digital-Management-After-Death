@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>디지털 유산 데이터 관리</title>
+    <style>
+      body {
+        font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-weight: bold;
+        font-size: 20px;
+        color: #333;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+      .user-name {
+        margin-right: 15px;
+        font-weight: 500;
+      }
+      .logout-button {
+        background-color: #f1f3f5;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+      }
+      .logout-button:hover {
+        background-color: #e9ecef;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      .back-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin-bottom: 20px;
+      }
+      .back-button:hover {
+        color: #333;
+      }
+      .back-icon {
+        margin-right: 5px;
+      }
+      .welcome-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+      }
+      h1 {
+        color: #333;
+        margin-top: 0;
+        font-size: 24px;
+      }
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+        display: flex;
+        align-items: center;
+      }
+      .card-icon {
+        margin-right: 10px;
+        font-size: 20px;
+      }
+      .data-section {
+        margin-bottom: 20px;
+      }
+      .data-section-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 16px;
+      }
+      .data-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .data-item:last-child {
+        border-bottom: none;
+      }
+      .data-info {
+        flex: 1;
+      }
+      .data-name {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #333;
+      }
+      .data-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .data-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-left: 10px;
+      }
+      .status-pending {
+        background-color: #ffe066;
+        color: #f59f00;
+      }
+      .status-no-agent {
+        background-color: #ff8787;
+        color: #d63031;
+      }
+      .data-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .action-button {
+        background-color: #f1f3f5;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .action-button:hover {
+        background-color: #e9ecef;
+      }
+      .action-button-delete {
+        background-color: #e74c3c;
+        color: white;
+      }
+      .action-button-delete:hover {
+        background-color: #c0392b;
+      }
+      .add-button {
+        background-color: #4dadf7;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .add-button:hover {
+        opacity: 0.9;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        padding: 30px;
+        position: relative;
+      }
+      .modal-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+      }
+      .modal-form-group {
+        margin-bottom: 15px;
+      }
+      .modal-form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+      }
+      .modal-form-group input,
+      .modal-form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .modal-btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .modal-btn-cancel {
+        background-color: #f1f3f5;
+        color: #333;
+      }
+      .modal-btn-cancel:hover {
+        background-color: #e9ecef;
+      }
+      .modal-btn-confirm {
+        background-color: #4dadf7;
+        color: white;
+      }
+      .modal-btn-confirm:hover {
+        opacity: 0.9;
+      }
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #999;
+      }
+      .close-modal:hover {
+        color: #333;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .empty-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">디지털 사후 관리 웹앱</div>
+      <div class="user-info">
+        <span class="user-name" id="username">사용자명</span>
+        <button class="logout-button" onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <button class="back-button" onclick="navigateToHome()">
+        <span class="back-icon">←</span> 돌아가기
+      </button>
+      <div class="welcome-card">
+        <h1>디지털 유산 데이터 관리</h1>
+        <div class="data-section" id="transfer-data-section">
+          <h2 class="card-title">
+            <span class="card-icon">🗂️</span>
+            데이터 전달 설정
+          </h2>
+          <div id="transfer-data-list">
+            <div class="empty-state" id="transfer-empty-state">
+              <div class="empty-icon">🔍</div>
+              <p>전달할 데이터가 없습니다. 데이터를 추가해보세요.</p>
+            </div>
+          </div>
+          <button class="add-button" onclick="openAddDataModal('transfer')">
+            + 데이터 추가
+          </button>
+        </div>
+        <div class="data-section" id="delete-data-section">
+          <h2 class="card-title">
+            <span class="card-icon">🗑️</span>
+            데이터 삭제 설정
+          </h2>
+          <div id="delete-data-list">
+            <div class="empty-state" id="delete-empty-state">
+              <div class="empty-icon">🔎</div>
+              <p>삭제할 데이터가 없습니다. 데이터를 추가해보세요.</p>
+            </div>
+          </div>
+          <button class="add-button" onclick="openAddDataModal('delete')">
+            + 데이터 추가
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 데이터 추가 모달 -->
+    <div class="modal" id="add-data-modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 class="modal-title" id="modal-title">데이터 추가</h2>
+
+        <form class="modal-form" id="add-data-form">
+          <div class="modal-form-group">
+            <label for="data-type">데이터 유형</label>
+            <select id="data-type" required onchange="updateSubTypeOptions()">
+              <option value="">유형 선택</option>
+              <option value="sns">SNS 데이터</option>
+              <option value="email">이메일 데이터</option>
+              <option value="cloud">클라우드 데이터</option>
+              <option value="other">기타 데이터</option>
+            </select>
+          </div>
+
+          <div class="modal-form-group" id="sub-type-group">
+            <label for="sub-type">세부 유형</label>
+            <select id="sub-type" required>
+              <option value="">세부 유형 선택</option>
+            </select>
+          </div>
+
+          <div class="modal-form-group">
+            <label for="data-name">데이터 이름</label>
+            <input
+              type="text"
+              id="data-name"
+              placeholder="데이터 이름을 입력하세요"
+              required
+            />
+          </div>
+
+          <div class="modal-form-group">
+            <label for="transfer-method">전달/삭제 방법</label>
+            <select
+              id="transfer-method"
+              required
+              onchange="toggleAgentSelection()"
+            >
+              <option value="">방법 선택</option>
+              <option value="specific-agent">특정 대리인에게 전달</option>
+              <option value="complete-delete">완전 삭제</option>
+            </select>
+          </div>
+
+          <div
+            class="modal-form-group"
+            id="agent-selection-group"
+            style="display: none"
+          >
+            <label for="agent-id">대리인 선택</label>
+            <select id="agent-id" required>
+              <option value="">대리인을 선택하세요</option>
+            </select>
+          </div>
+
+          <div class="modal-form-group" id="auto-delete-group">
+            <label for="auto-delete">대리인 미설정 시 자동 삭제</label>
+            <select id="auto-delete" required>
+              <option value="yes">예</option>
+              <option value="no">아니요</option>
+            </select>
+          </div>
+        </form>
+
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" onclick="closeModal()">
+            취소
+          </button>
+          <button class="modal-btn modal-btn-confirm" onclick="addData()">
+            추가
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 전달/삭제 데이터 목록
+      let transferDataList =
+        JSON.parse(localStorage.getItem("transferDataList")) || [];
+      let deleteDataList =
+        JSON.parse(localStorage.getItem("deleteDataList")) || [];
+      let agents = JSON.parse(localStorage.getItem("digitalAgents")) || [];
+      let currentModalType = "";
+      let currentEditIndex = null;
+
+      // 페이지 로드 시 데이터 표시
+      document.addEventListener("DOMContentLoaded", function () {
+        // 사용자 정보 불러오기
+        fetch("/api/user-info")
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("username").textContent = data.name;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            window.location.href = "/auth/login";
+          });
+
+        // 데이터 목록 표시
+        displayDataList("transfer");
+        displayDataList("delete");
+      });
+
+      // 홈으로 돌아가기
+      function navigateToHome() {
+        window.location.href = "/home";
+      }
+
+      // 데이터 목록 표시 함수
+      function displayDataList(type) {
+        const listElement = document.getElementById(`${type}-data-list`);
+        const emptyStateElement = document.getElementById(
+          `${type}-empty-state`
+        );
+        const dataList =
+          type === "transfer" ? transferDataList : deleteDataList;
+
+        // 기존 목록 초기화
+        listElement.innerHTML = "";
+        listElement.appendChild(emptyStateElement);
+
+        // 데이터가 없는 경우 empty state 표시
+        if (dataList.length === 0) {
+          emptyStateElement.style.display = "block";
+          return;
+        }
+
+        // empty state 숨기기
+        emptyStateElement.style.display = "none";
+
+        // 데이터 목록 생성
+        dataList.forEach((data, index) => {
+          const agent = data.agentId
+            ? agents.find((a) => a.id === data.agentId)
+            : null;
+          let statusClass = "status-pending";
+          let statusText = "사망 확인 대기중";
+
+          if (type === "transfer" && (!agent || !agent.isAuthenticated)) {
+            statusClass = "status-no-agent";
+            statusText = agent ? "대리인 인증 필요" : "대리인 미설정";
+          }
+
+          const dataItem = document.createElement("div");
+          dataItem.className = "data-item";
+          dataItem.innerHTML = `
+          <div class="data-info">
+            <div class="data-name">${data.name}
+              <span class="data-status ${statusClass}">${statusText}</span>
+            </div>
+            <div class="data-description">
+              유형: ${getDataTypeLabel(data.type, data.subType)} | 
+              방법: ${getTransferMethodLabel(data.transferMethod)}
+              ${
+                agent
+                  ? ` | 대리인: ${agent.name} (${agent.email})`
+                  : data.autoDelete === "yes"
+                  ? " | 대리인 미설정 시 자동 삭제"
+                  : ""
+              }
+            </div>
+          </div>
+          <div class="data-actions">
+            <button class="action-button" onclick="editData('${type}', ${index})">수정</button>
+            <button class="action-button action-button-delete" onclick="deleteData('${type}', ${index})">삭제</button>
+          </div>
+        `;
+
+          listElement.appendChild(dataItem);
+        });
+      }
+
+      // 데이터 유형 레이블 반환
+      function getDataTypeLabel(type, subType) {
+        const typeLabels = {
+          sns: "SNS 데이터",
+          email: "이메일 데이터",
+          cloud: "클라우드 데이터",
+          other: "기타 데이터",
+        };
+        const subTypeLabels = {
+          "kakao-profile": "카카오 프로필",
+          "kakao-messages": "카카오 메시지",
+          "email-account": "이메일 계정",
+          "cloud-storage": "클라우드 스토리지",
+          other: "기타",
+        };
+        return `${typeLabels[type] || type} (${
+          subTypeLabels[subType] || subType
+        })`;
+      }
+
+      // 전달/삭제 방법 레이블 반환
+      function getTransferMethodLabel(method) {
+        const labels = {
+          "specific-agent": "특정 대리인에게 전달",
+          "complete-delete": "완전 삭제",
+        };
+        return labels[method] || method;
+      }
+
+      // 데이터 유형에 따라 세부 유형 옵션 업데이트
+      function updateSubTypeOptions() {
+        const dataType = document.getElementById("data-type").value;
+        const subTypeSelect = document.getElementById("sub-type");
+        subTypeSelect.innerHTML = '<option value="">세부 유형 선택</option>';
+
+        const subTypes = {
+          sns: [
+            { value: "kakao-profile", label: "카카오 프로필" },
+            { value: "kakao-messages", label: "카카오 메시지" },
+          ],
+          email: [{ value: "email-account", label: "이메일 계정" }],
+          cloud: [{ value: "cloud-storage", label: "클라우드 스토리지" }],
+          other: [{ value: "other", label: "기타" }],
+        };
+
+        const options = subTypes[dataType] || [];
+        options.forEach((option) => {
+          const optionElement = document.createElement("option");
+          optionElement.value = option.value;
+          optionElement.textContent = option.label;
+          subTypeSelect.appendChild(optionElement);
+        });
+      }
+
+      // 대리인 선택 UI 표시/숨김
+      function toggleAgentSelection() {
+        const transferMethod = document.getElementById("transfer-method").value;
+        const agentSelectionGroup = document.getElementById(
+          "agent-selection-group"
+        );
+        const agentSelect = document.getElementById("agent-id");
+
+        if (transferMethod === "specific-agent") {
+          agentSelectionGroup.style.display = "block";
+
+          // 대리인 목록 로드
+          agentSelect.innerHTML =
+            '<option value="">대리인을 선택하세요</option>';
+          agents.forEach((agent) => {
+            const option = document.createElement("option");
+            option.value = agent.id;
+            option.textContent = `${agent.name} (${agent.email})`;
+            agentSelect.appendChild(option);
+          });
+        } else {
+          agentSelectionGroup.style.display = "none";
+        }
+      }
+
+      // 데이터 추가 모달 열기
+      function openAddDataModal(type) {
+        currentModalType = type;
+        currentEditIndex = null;
+        const modal = document.getElementById("add-data-modal");
+        const modalTitle = document.getElementById("modal-title");
+
+        modalTitle.textContent =
+          type === "transfer" ? "전달할 데이터 추가" : "삭제할 데이터 추가";
+
+        // 폼 초기화
+        document.getElementById("add-data-form").reset();
+        document.getElementById("agent-selection-group").style.display = "none";
+        updateSubTypeOptions();
+
+        modal.style.display = "flex";
+      }
+
+      // 모달 닫기
+      function closeModal() {
+        document.getElementById("add-data-modal").style.display = "none";
+        currentModalType = "";
+        currentEditIndex = null;
+      }
+
+      // 데이터 추가
+      function addData() {
+        const dataType = document.getElementById("data-type").value;
+        const subType = document.getElementById("sub-type").value;
+        const dataName = document.getElementById("data-name").value;
+        const transferMethod = document.getElementById("transfer-method").value;
+        const agentId = document.getElementById("agent-id").value;
+        const autoDelete = document.getElementById("auto-delete").value;
+
+        if (!dataType || !subType || !dataName || !transferMethod) {
+          alert("모든 필수 필드를 입력해주세요.");
+          return;
+        }
+
+        if (transferMethod === "specific-agent" && !agentId) {
+          alert("대리인을 선택해주세요.");
+          return;
+        }
+
+        const newData = {
+          type: dataType,
+          subType: subType,
+          name: dataName,
+          transferMethod: transferMethod,
+          agentId: transferMethod === "specific-agent" ? agentId : null,
+          autoDelete: autoDelete,
+        };
+
+        // 데이터 리스트에 추가
+        if (currentModalType === "transfer") {
+          if (currentEditIndex !== null) {
+            transferDataList[currentEditIndex] = newData;
+          } else {
+            transferDataList.push(newData);
+          }
+          localStorage.setItem(
+            "transferDataList",
+            JSON.stringify(transferDataList)
+          );
+          displayDataList("transfer");
+        } else {
+          if (currentEditIndex !== null) {
+            deleteDataList[currentEditIndex] = newData;
+          } else {
+            deleteDataList.push(newData);
+          }
+          localStorage.setItem(
+            "deleteDataList",
+            JSON.stringify(deleteDataList)
+          );
+          displayDataList("delete");
+        }
+
+        // 모달 닫기
+        closeModal();
+      }
+
+      // 데이터 수정
+      function editData(type, index) {
+        const dataList =
+          type === "transfer" ? transferDataList : deleteDataList;
+        const data = dataList[index];
+
+        // 모달 열기
+        currentModalType = type;
+        currentEditIndex = index;
+        const modal = document.getElementById("add-data-modal");
+        const modalTitle = document.getElementById("modal-title");
+
+        modalTitle.textContent =
+          type === "transfer" ? "전달할 데이터 수정" : "삭제할 데이터 수정";
+
+        // 기존 데이터로 폼 채우기
+        document.getElementById("data-type").value = data.type;
+        updateSubTypeOptions();
+        document.getElementById("sub-type").value = data.subType;
+        document.getElementById("data-name").value = data.name;
+        document.getElementById("transfer-method").value = data.transferMethod;
+        toggleAgentSelection();
+        if (data.agentId) {
+          document.getElementById("agent-id").value = data.agentId;
+        }
+        document.getElementById("auto-delete").value = data.autoDelete || "no";
+
+        modal.style.display = "flex";
+      }
+
+      // 데이터 삭제
+      function deleteData(type, index) {
+        if (!confirm("정말 이 데이터를 삭제하시겠습니까?")) {
+          return;
+        }
+
+        if (type === "transfer") {
+          transferDataList.splice(index, 1);
+          localStorage.setItem(
+            "transferDataList",
+            JSON.stringify(transferDataList)
+          );
+          displayDataList("transfer");
+        } else {
+          deleteDataList.splice(index, 1);
+          localStorage.setItem(
+            "deleteDataList",
+            JSON.stringify(deleteDataList)
+          );
+          displayDataList("delete");
+        }
+      }
+
+      // 로그아웃
+      function logout() {
+        fetch("/auth/logout", { method: "POST" })
+          .then(() => {
+            window.location.href = "/";
+          })
+          .catch((error) => {
+            console.error("로그아웃 중 오류:", error);
+            window.location.href = "/";
+          });
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'930c200769ffb05d',t:'MTc0NDcyNzI2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'930c71255cac7bcc',t:'MTc0NDczMDU4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

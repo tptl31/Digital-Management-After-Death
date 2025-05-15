@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>간편공인인증서 로그인</title>
+  <style>
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 400px;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    .form-container {
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      border-color: #FFEB00;
+      box-shadow: 0 0 0 2px rgba(255, 235, 0, 0.2);
+    }
+    .cert-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 25px;
+    }
+    .cert-button {
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px 15px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .cert-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .cert-icon {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+    }
+    .kakao-button {
+      background-color: #FFEB00;
+    }
+    .kakao-button:hover {
+      background-color: #FFD600;
+    }
+    .toss-button {
+      background-color: #0064FF;
+      color: white;
+    }
+    .toss-button:hover {
+      background-color: #0052CC;
+    }
+    .naver-button {
+      background-color: #03C75A;
+      color: white;
+    }
+    .naver-button:hover {
+      background-color: #02B350;
+    }
+    .pass-button {
+      background-color: #FF5A5A;
+      color: white;
+    }
+    .pass-button:hover {
+      background-color: #FF4040;
+    }
+    .description {
+      color: #666;
+      font-size: 14px;
+      margin: 20px 0;
+    }
+    .birth-input {
+      display: flex;
+      gap: 8px;
+    }
+    .birth-input input:first-child {
+      flex: 6;
+    }
+    .birth-input .separator {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      color: #555;
+    }
+    .birth-input input:last-child {
+      flex: 1;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>간편공인인증서 로그인</h1>
+    
+    <div class="form-container">
+      <form id="userInfoForm">
+        <div class="form-group">
+          <label for="userName">이름</label>
+          <input type="text" id="userName" name="userName" placeholder="실명을 입력하세요" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="userPhone">휴대폰 번호</label>
+          <input type="tel" id="userPhone" name="userPhone" placeholder="'-' 없이 입력하세요" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="userRrn">주민등록번호</label>
+          <div class="birth-input">
+            <input type="text" id="userRrnFirst" name="userRrnFirst" maxlength="6" placeholder="앞 6자리" required>
+            <span class="separator">-</span>
+            <input type="password" id="userRrnLast" name="userRrnLast" maxlength="7" placeholder="뒷 7자리" required>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <p class="description">본인 확인 후 원하시는 인증서를 선택하세요</p>
+    
+    <div class="cert-options">
+      <button class="cert-button kakao-button" onclick="startCertLogin('kakao')">
+        <svg class="cert-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3C6.5 3 2 6.3 2 10.4c0 2.6 1.7 4.9 4.3 6.2-.2.7-.7 2.4-.8 2.8-.1.5.2.5.4.4.2-.1 2.5-1.7 3.5-2.4.8.1 1.7.2 2.6.2 5.5 0 10-3.3 10-7.4S17.5 3 12 3z" fill="#3C1E1E"/>
+        </svg>
+        카카오
+      </button>
+      <button class="cert-button toss-button" onclick="startCertLogin('toss')">
+        <svg class="cert-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="white"/>
+        </svg>
+        토스
+      </button>
+      <button class="cert-button naver-button" onclick="startCertLogin('naver')">
+        <svg class="cert-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 8.8v6.4h-1.8l-2.9-3.6v3.6H9V8.8h1.8l3 3.6V8.8H16z" fill="white"/>
+        </svg>
+        네이버
+      </button>
+      <button class="cert-button pass-button" onclick="startCertLogin('pass')">
+        <svg class="cert-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white"/>
+        </svg>
+        PASS
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function startCertLogin(provider) {
+      // 폼 데이터 수집
+      const userName = document.getElementById('userName').value;
+      const userPhone = document.getElementById('userPhone').value;
+      const userRrnFirst = document.getElementById('userRrnFirst').value;
+      const userRrnLast = document.getElementById('userRrnLast').value;
+      
+      // 입력값 검증
+      if (!userName || !userPhone || !userRrnFirst || !userRrnLast) {
+        alert('모든 필드를 입력해주세요.');
+        return;
+      }
+      
+      if (userRrnFirst.length !== 6 || userRrnLast.length !== 7) {
+        alert('주민등록번호 형식이 올바르지 않습니다.');
+        return;
+      }
+      
+      // 주민등록번호 마스킹 처리 (보안을 위해)
+      const maskedRrn = userRrnFirst + '-' + userRrnLast.substring(0, 1) + '******';
+      
+      // URL 파라미터로 전달 (실제로는 POST 요청이나 세션을 사용해야 함)
+      const params = new URLSearchParams({
+        name: userName,
+        phone: userPhone,
+        rrn: maskedRrn,
+        provider: provider
+      });
+      
+      window.location.href = `/auth/verify-user?${params.toString()}`;
+    }
+  </script>
+</body>
+</html>
